@@ -23,9 +23,14 @@
 
 ### 3. KUBECONFIG 파일
 ```bash
-# 현재 kubeconfig를 base64로 인코딩
+# Linux/Unix에서 base64 인코딩 (줄바꿈 없이)
+cat ~/.kube/config | base64 -w 0
+
+# macOS에서 base64 인코딩 (이미 줄바꿈 없음)
 cat ~/.kube/config | base64
 ```
+
+⚠️ **중요**: base64로 인코딩된 값은 **줄바꿈 없이 한 줄**로 생성되어야 합니다!
 
 ---
 

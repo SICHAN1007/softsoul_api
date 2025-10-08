@@ -52,8 +52,10 @@ jobs:
       - name: Set up Kubernetes config
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          printf '%s' "$KUBE_CONFIG_CONTENT" | base64 --decode > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
+        env:
+          KUBE_CONFIG_CONTENT: ${{ secrets.KUBE_CONFIG }}
 
       - name: Verify Kubernetes connection
         run: kubectl cluster-info
