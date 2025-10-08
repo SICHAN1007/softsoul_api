@@ -6,13 +6,13 @@ import { logger } from '../utils/logger.js';
 const router = express.Router();
 const fundService = createNotionService(DATABASE_IDS.fundData);
 
-// GET /api/fund - 전체 조회
-router.get('/', async (req, res) => {
+// POST /api/fund/list - 전체 조회
+router.post('/list', async (req, res) => {
   try {
-    const { filter, sorts } = req.query;
+    const { filter, sorts } = req.body;
     
-    const filterObj = filter ? JSON.parse(filter) : {};
-    const sortsArr = sorts ? JSON.parse(sorts) : [];
+    const filterObj = filter || {};
+    const sortsArr = sorts || [];
     
     const result = await fundService.getAllItems(filterObj, sortsArr);
     res.json(result);
@@ -22,10 +22,18 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/fund/:pageId - 특정 항목 조회
-router.get('/:pageId', async (req, res) => {
+// POST /api/fund/get - 특정 항목 조회
+router.post('/get', async (req, res) => {
   try {
-    const { pageId } = req.params;
+    const { pageId } = req.body;
+    
+    if (!pageId) {
+      return res.status(400).json({
+        success: false,
+        error: 'pageId 필드가 필요합니다.',
+      });
+    }
+    
     const result = await fundService.getItem(pageId);
     res.json(result);
   } catch (error) {
