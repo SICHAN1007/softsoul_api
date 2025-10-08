@@ -23,14 +23,11 @@
 
 ### 3. KUBECONFIG 파일
 ```bash
-# Linux/Unix에서 base64 인코딩 (줄바꿈 없이)
-cat ~/.kube/config | base64 -w 0
-
-# macOS에서 base64 인코딩 (이미 줄바꿈 없음)
-cat ~/.kube/config | base64
+# kubeconfig 파일 내용 확인
+cat ~/.kube/config
 ```
 
-⚠️ **중요**: base64로 인코딩된 값은 **줄바꿈 없이 한 줄**로 생성되어야 합니다!
+⚠️ **중요**: `~/.kube/config` 파일의 **원본 내용을 그대로** GitHub Secret에 저장하세요. Base64 인코딩은 **필요 없습니다**!
 
 ---
 
@@ -47,7 +44,7 @@ GitHub Repository → Settings → Secrets and variables → Actions에서 다�
 ### Kubernetes 관련
 | Secret 이름 | 설명 |
 |------------|------|
-| `KUBE_CONFIG` | base64 인코딩된 kubeconfig 파일 내용 |
+| `KUBE_CONFIG` | kubeconfig 파일의 원본 내용 (base64 인코딩 불필요) |
 
 ### 환경변수 (Notion 데이터베이스 ID)
 | Secret 이름 | 설명 |

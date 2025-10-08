@@ -52,7 +52,7 @@ jobs:
       - name: Set up Kubernetes config
         run: |
           mkdir -p $HOME/.kube
-          printf '%s' "$KUBE_CONFIG_CONTENT" | base64 --decode > $HOME/.kube/config
+          echo "$KUBE_CONFIG_CONTENT" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
         env:
           KUBE_CONFIG_CONTENT: ${{ secrets.KUBE_CONFIG }}
