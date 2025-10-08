@@ -233,7 +233,39 @@ kubectl describe pod <pod-name>
 
 # 환경변수 확인
 kubectl exec <pod-name> -- env | grep -E "(NOTION|DATABASE)"
+
+# 실시간 Pod 이벤트 확인
+kubectl get events --sort-by='.lastTimestamp' | grep softsoul-api
 ```
+
+### Deployment Timeout 오류
+배포는 성공했지만 Pod가 Ready 상태가 되지 않는 경우:
+
+```bash
+# Pod 상태 확인
+kubectl get pods -l app=softsoul-api -o wide
+
+# 상태별 확인:
+# - ImagePullBackOff: Docker 이미지를 가져오지 못함
+# - CrashLoopBackOff: 컨테이너가 시작 후 계속 죽음
+# - Pending: 리소스 부족 또는 스케줄링 불가
+
+# Pod 상세 정보로 원인 파악
+kubectl describe pod <pod-name>
+
+# Pod 로그로 애플리케이션 오류 확인
+kubectl logs <pod-name> --previous  # 이전 컨테이너 로그
+kubectl logs <pod-name>              # 현재 컨테이너 로그
+
+# 강제 재시작
+kubectl rollout restart deployment/softsoul-api
+```
+
+**일반적인 원인:**
+1. **환경변수 누락**: GitHub Secrets에 모든 환경변수가 설정되었는지 확인
+2. **Notion API 오류**: NOTION_API_KEY가 올바른지 확인
+3. **리소스 부족**: 클러스터에 충분한 CPU/메모리가 있는지 확인
+4. **이미지 Pull 실패**: Docker Hub에 이미지가 올바르게 푸시되었는지 확인
 
 ### Service 연결 안 됨
 ```bash

@@ -38,9 +38,9 @@ EXPOSE 80
 ENV NODE_ENV=production
 ENV PORT=80
 
-# 헬스체크
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:80/api/products', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+# 헬스체크 (disabled - Kubernetes에서 관리)
+# HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+#   CMD node -e "require('http').get('http://localhost:80/api/products', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # 서버 실행
 CMD ["node", "src/server.js"]

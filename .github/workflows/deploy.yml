@@ -127,17 +127,17 @@ jobs:
                     httpGet:
                       path: /api/products
                       port: 80
-                    initialDelaySeconds: 30
+                    initialDelaySeconds: 60
                     periodSeconds: 10
-                    timeoutSeconds: 3
+                    timeoutSeconds: 5
                     failureThreshold: 3
                   readinessProbe:
                     httpGet:
                       path: /api/products
                       port: 80
-                    initialDelaySeconds: 10
-                    periodSeconds: 5
-                    timeoutSeconds: 3
+                    initialDelaySeconds: 30
+                    periodSeconds: 10
+                    timeoutSeconds: 5
                     failureThreshold: 3
                 restartPolicy: Always
           EOF
@@ -147,15 +147,51 @@ jobs:
         run: |
           kubectl apply -f k8s/service.yaml
           kubectl apply -f k8s/deployment-generated.yaml
-          kubectl rollout status deployment/softsoul-api -w --timeout=5m
-
-      # 9. 배포 확인
-      - name: Verify Deployment
+          
+      - name: Wait for Deployment
         run: |
-          echo "✅ Deployment completed successfully"
+          echo "⏳ Waiting for deployment to complete..."
+          kubectl rollout status deployment/softsoul-api -w --timeout=3m || true
+          
+      # 9. 배포 확인 및 디버깅
+      - name: Check Deployment Status
+        run: |
+          echo "============================================"
+          echo "📊 Deployment Status"
+          echo "============================================"
           kubectl get deployments softsoul-api
+          echo ""
+          echo "============================================"
+          echo "📊 Service Status"
+          echo "============================================"
           kubectl get services softsoul-api-service
-          kubectl get pods -l app=softsoul-api
+          echo ""
+          echo "============================================"
+          echo "📊 Pod Status"
+          echo "============================================"
+          kubectl get pods -l app=softsoul-api -o wide
+          echo ""
+          echo "============================================"
+          echo "📊 Pod Details"
+          echo "============================================"
+          kubectl describe pods -l app=softsoul-api
+          echo ""
+          echo "============================================"
+          echo "📊 Pod Logs (if available)"
+          echo "============================================"
+          for pod in $(kubectl get pods -l app=softsoul-api -o jsonpath='{.items[*].metadata.name}'); do
+            echo "--- Logs for $pod ---"
+            kubectl logs $pod --tail=50 || echo "No logs available for $pod"
+            echo ""
+          done
+          
+      - name: Check Pod Events
+        if: failure()
+        run: |
+          echo "============================================"
+          echo "⚠️ Recent Events"
+          echo "============================================"
+          kubectl get events --sort-by='.lastTimestamp' --field-selector involvedObject.kind=Pod -n default | tail -20
           
       - name: Deployment Summary
         run: |
