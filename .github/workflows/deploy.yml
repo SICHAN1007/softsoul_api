@@ -125,19 +125,19 @@ jobs:
                       memory: "256Mi"
                   livenessProbe:
                     httpGet:
-                      path: /api/products
+                      path: /health
                       port: 80
-                    initialDelaySeconds: 60
+                    initialDelaySeconds: 30
                     periodSeconds: 10
                     timeoutSeconds: 5
                     failureThreshold: 3
                   readinessProbe:
                     httpGet:
-                      path: /api/products
+                      path: /health
                       port: 80
-                    initialDelaySeconds: 30
-                    periodSeconds: 10
-                    timeoutSeconds: 5
+                    initialDelaySeconds: 10
+                    periodSeconds: 5
+                    timeoutSeconds: 3
                     failureThreshold: 3
                 restartPolicy: Always
           EOF
