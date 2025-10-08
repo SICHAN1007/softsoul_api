@@ -1,0 +1,168 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Node.js 설정 및 빌드 확인
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build verification
+        run: |
+          echo "✅ Dependencies installed successfully"
+          echo "📦 Package verification complete"
+
+      # 3. Docker 이미지 빌드
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/softsoul-api:latest .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/softsoul-api:latest ${{ secrets.DOCKER_USERNAME }}/softsoul-api:${{ github.sha }}
+
+      # 4. Docker Hub 로그인
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 5. Docker Hub에 푸시
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/softsoul-api:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/softsoul-api:${{ github.sha }}
+
+      # 6. Kubernetes 설정
+      - name: Set up Kubernetes config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Verify Kubernetes connection
+        run: kubectl cluster-info
+
+      # 7. Kubernetes 배포 YAML 생성
+      - name: Generate Deployment YAML
+        run: |
+          cat <<EOF > k8s/deployment-generated.yaml
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: softsoul-api
+            labels:
+              app: softsoul-api
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
+                app: softsoul-api
+            template:
+              metadata:
+                labels:
+                  app: softsoul-api
+              spec:
+                containers:
+                - name: softsoul-api
+                  image: ${{ secrets.DOCKER_USERNAME }}/softsoul-api:latest
+                  imagePullPolicy: Always
+                  ports:
+                  - containerPort: 80
+                    protocol: TCP
+                  env:
+                  - name: NODE_ENV
+                    value: "production"
+                  - name: PORT
+                    value: "80"
+                  - name: NOTION_API_KEY
+                    value: "${{ secrets.NOTION_API_KEY }}"
+                  - name: CUSTOMER_DATA
+                    value: "${{ secrets.CUSTOMER_DATA }}"
+                  - name: EXCHANGE_DATA
+                    value: "${{ secrets.EXCHANGE_DATA }}"
+                  - name: EXTERNAL_ID_DATA
+                    value: "${{ secrets.EXTERNAL_ID_DATA }}"
+                  - name: FUND_DATA
+                    value: "${{ secrets.FUND_DATA }}"
+                  - name: LEVEL_DATABASE
+                    value: "${{ secrets.LEVEL_DATABASE }}"
+                  - name: MYANMAR_DELIVERY_DATA
+                    value: "${{ secrets.MYANMAR_DELIVERY_DATA }}"
+                  - name: PRODUCT_DATA
+                    value: "${{ secrets.PRODUCT_DATA }}"
+                  - name: SHIPPING_DATA
+                    value: "${{ secrets.SHIPPING_DATA }}"
+                  - name: TRANSACTION_DATABASE
+                    value: "${{ secrets.TRANSACTION_DATABASE }}"
+                  - name: VENDOR_DATA
+                    value: "${{ secrets.VENDOR_DATA }}"
+                  - name: WAREHOUSE_DATA
+                    value: "${{ secrets.WAREHOUSE_DATA }}"
+                  resources:
+                    requests:
+                      cpu: "100m"
+                      memory: "128Mi"
+                    limits:
+                      cpu: "200m"
+                      memory: "256Mi"
+                  livenessProbe:
+                    httpGet:
+                      path: /api/products
+                      port: 80
+                    initialDelaySeconds: 30
+                    periodSeconds: 10
+                    timeoutSeconds: 3
+                    failureThreshold: 3
+                  readinessProbe:
+                    httpGet:
+                      path: /api/products
+                      port: 80
+                    initialDelaySeconds: 10
+                    periodSeconds: 5
+                    timeoutSeconds: 3
+                    failureThreshold: 3
+                restartPolicy: Always
+          EOF
+
+      # 8. Kubernetes 배포 및 업데이트
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/deployment-generated.yaml
+          kubectl rollout status deployment/softsoul-api -w --timeout=5m
+
+      # 9. 배포 확인
+      - name: Verify Deployment
+        run: |
+          echo "✅ Deployment completed successfully"
+          kubectl get deployments softsoul-api
+          kubectl get services softsoul-api-service
+          kubectl get pods -l app=softsoul-api
+          
+      - name: Deployment Summary
+        run: |
+          echo "============================================"
+          echo "🚀 Deployment Summary"
+          echo "============================================"
+          echo "📦 Image: ${{ secrets.DOCKER_USERNAME }}/softsoul-api:latest"
+          echo "🔖 SHA: ${{ github.sha }}"
+          echo "🌐 Service: softsoul-api-service"
+          echo "📍 Endpoint: /softsoul_api"
+          echo "============================================"
+

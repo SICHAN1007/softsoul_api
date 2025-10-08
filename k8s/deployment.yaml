@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: softsoul-api
+  labels:
+    app: softsoul-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: softsoul-api
+  template:
+    metadata:
+      labels:
+        app: softsoul-api
+    spec:
+      containers:
+      - name: softsoul-api
+        image: <DOCKER_USERNAME>/softsoul-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "80"
+        - name: NOTION_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: notion-api-key
+        - name: CUSTOMER_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: customer-data
+        - name: EXCHANGE_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: exchange-data
+        - name: EXTERNAL_ID_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: external-id-data
+        - name: FUND_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: fund-data
+        - name: LEVEL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: level-database
+        - name: MYANMAR_DELIVERY_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: myanmar-delivery-data
+        - name: PRODUCT_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: product-data
+        - name: SHIPPING_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: shipping-data
+        - name: TRANSACTION_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: transaction-database
+        - name: VENDOR_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: vendor-data
+        - name: WAREHOUSE_DATA
+          valueFrom:
+            secretKeyRef:
+              name: softsoul-api-secrets
+              key: warehouse-data
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /api/products
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/products
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      restartPolicy: Always
+
