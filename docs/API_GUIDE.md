@@ -10,17 +10,17 @@ Notion 기반 물류/쇼핑몰 관리 시스템의 모든 API를 제공합니다
 
 | # | API | 엔드포인트 | 설명 | 문서 |
 |---|-----|-----------|------|------|
-| 1️⃣ | Products | `/api/products` | 상품 데이터 관리 | [PRODUCTS_API.md](./PRODUCTS_API.md) |
-| 2️⃣ | Shipping | `/api/shipping` | 배송 데이터 관리 | [SHIPPING_API.md](./SHIPPING_API.md) |
-| 3️⃣ | Fund | `/api/fund` | 입금 데이터 관리 | [FUND_API.md](./FUND_API.md) |
-| 4️⃣ | Customers | `/api/customers` | 구매자 데이터 관리 | [CUSTOMERS_API.md](./CUSTOMERS_API.md) |
-| 5️⃣ | Vendors | `/api/vendors` | 구매처 데이터 관리 | [VENDORS_API.md](./VENDORS_API.md) |
-| 6️⃣ | Warehouses | `/api/warehouses` | 배송처 데이터 관리 | [WAREHOUSES_API.md](./WAREHOUSES_API.md) |
-| 7️⃣ | Exchange | `/api/exchange` | 환율 데이터 관리 | [EXCHANGE_API.md](./EXCHANGE_API.md) |
-| 8️⃣ | Transactions | `/api/transactions` | 입출금계좌 관리 | [TRANSACTIONS_API.md](./TRANSACTIONS_API.md) |
-| 9️⃣ | Myanmar Delivery | `/api/myanmar-delivery` | 미얀마배송 관리 | [MYANMAR_DELIVERY_API.md](./MYANMAR_DELIVERY_API.md) |
-| 🔟 | Levels | `/api/levels` | 주문 상태 관리 | [LEVELS_API.md](./LEVELS_API.md) |
-| 1️⃣1️⃣ | External IDs | `/api/external-ids` | 외부ID 관리 | [EXTERNAL_IDS_API.md](./EXTERNAL_IDS_API.md) |
+| 1️⃣ | Products | `/api/products` | 상품 데이터 관리 | [PRODUCTS_API.md](./api/PRODUCTS_API.md) |
+| 2️⃣ | Shipping | `/api/shipping` | 배송 데이터 관리 | [SHIPPING_API.md](./api/SHIPPING_API.md) |
+| 3️⃣ | Fund | `/api/fund` | 입금 데이터 관리 | [FUND_API.md](./api/FUND_API.md) |
+| 4️⃣ | Customers | `/api/customers` | 구매자 데이터 관리 | [CUSTOMERS_API.md](./api/CUSTOMERS_API.md) |
+| 5️⃣ | Vendors | `/api/vendors` | 구매처 데이터 관리 | [VENDORS_API.md](./api/VENDORS_API.md) |
+| 6️⃣ | Warehouses | `/api/warehouses` | 배송처 데이터 관리 | [WAREHOUSES_API.md](./api/WAREHOUSES_API.md) |
+| 7️⃣ | Exchange | `/api/exchange` | 환율 데이터 관리 | [EXCHANGE_API.md](./api/EXCHANGE_API.md) |
+| 8️⃣ | Transactions | `/api/transactions` | 입출금계좌 관리 | [TRANSACTIONS_API.md](./api/TRANSACTIONS_API.md) |
+| 9️⃣ | Myanmar Delivery | `/api/myanmar-delivery` | 미얀마배송 관리 | [MYANMAR_DELIVERY_API.md](./api/MYANMAR_DELIVERY_API.md) |
+| 🔟 | Levels | `/api/levels` | 주문 상태 관리 | [LEVELS_API.md](./api/LEVELS_API.md) |
+| 1️⃣1️⃣ | External IDs | `/api/external-ids` | 외부ID 관리 | [EXTERNAL_IDS_API.md](./api/EXTERNAL_IDS_API.md) |
 
 ---
 
@@ -301,7 +301,7 @@ LEVEL_DATABASE_ID=...
 EXTERNAL_ID_DATABASE_ID=...
 ```
 
-자세한 내용은 [SETUP_ENV.md](./SETUP_ENV.md)를 참조하세요.
+자세한 내용은 [SETUP_ENV.md](./processes/SETUP_ENV.md)를 참조하세요.
 
 ---
 
@@ -427,4 +427,5 @@ const update = await fetch('/api/{endpoint}/페이지ID/properties', {
 ---
 
 **🎉 모든 API가 동일한 패턴으로 작동하므로, 하나를 배우면 모두 사용할 수 있습니다!**
+
 

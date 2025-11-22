@@ -510,3 +510,6 @@ console.log(data);
 
 6. **에러 처리**: 모든 API는 `{ success: boolean, error?: string }` 형식으로 응답합니다.
 
+
+
+

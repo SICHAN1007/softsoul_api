@@ -500,3 +500,6 @@ console.log(data);
 
 5. **에러 처리**: 모든 API는 `{ success: boolean, data?: any, error?: string }` 형식으로 응답합니다.
 
+
+
+

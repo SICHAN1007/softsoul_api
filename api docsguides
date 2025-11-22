@@ -1,0 +1,33 @@
+[1mdiff --git a/CUSTOMERS_API.md b/CUSTOMERS_API.md[m
+[1mindex 86473de..cca00e9 100644[m
+[1m--- a/CUSTOMERS_API.md[m
+[1m+++ b/CUSTOMERS_API.md[m
+[36m@@ -592,3 +592,6 @@[m [mconsole.log('CRUD 스키마:', crudSchema.data);[m
+ [m
+ 6. **에러 처리**: 모든 API는 `{ success: boolean, error?: string, details?: object }` 형식으로 응답합니다.[m
+ [m
+[41m+[m
+[41m+[m
+[41m+[m
+[1mdiff --git a/EXCHANGE_API.md b/EXCHANGE_API.md[m
+[1mindex 4c7c0a1..d36504b 100644[m
+[1m--- a/EXCHANGE_API.md[m
+[1m+++ b/EXCHANGE_API.md[m
+[36m@@ -530,3 +530,6 @@[m [mconst latest = await fetch('http://localhost:3001/api/exchange/list', {[m
+ });[m
+ ```[m
+ [m
+[41m+[m
+[41m+[m
+[41m+[m
+[1mdiff --git a/EXTERNAL_IDS_API.md b/EXTERNAL_IDS_API.md[m
+[1mindex cef0de2..3241078 100644[m
+[1m--- a/EXTERNAL_IDS_API.md[m
+[1m+++ b/EXTERNAL_IDS_API.md[m
+[36m@@ -253,3 +253,6 @@[m [mawait fetch('http://localhost:3001/api/external-ids', {[m
+ });[m
+ ```[m
+ [m
+[41m+[m
+[41m+[m
+[41m+[m
